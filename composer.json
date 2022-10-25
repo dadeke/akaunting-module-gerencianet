@@ -1,0 +1,41 @@
+{
+    "name": "akaunting/module-gerencianet",
+    "description": "Gerencianet app for Akaunting",
+    "version": "1.0.0",
+    "homepage": "https://akaunting.com/apps/gerencianet",
+    "keywords": [
+        "laravel",
+        "accounting",
+        "invoice",
+        "akaunting",
+        "gerencianet",
+        "pix",
+        "brazil",
+        "brasil"
+    ],
+    "license": "MIT",
+    "authors": [{
+        "name": "Deividson Damasio",
+        "email": "deividsondamasio@yahoo.com.br",
+        "homepage": "https://github.com/dadeke",
+        "role": "Web Developer"
+    }],
+    "require": {
+        "gerencianet/gerencianet-sdk-php": "^4.1"
+    },
+    "replace": {
+        "guzzlehttp/guzzle": "*",
+        "guzzlehttp/promises": "*",
+        "guzzlehttp/psr7": "*",
+        "psr/http-client": "*",
+        "psr/http-factory": "*",
+        "psr/http-message": "*",
+        "ralouphie/getallheaders": "*",
+        "symfony/deprecation-contracts": "*"
+    },
+    "scripts": {
+        "test": [
+            "composer install --prefer-dist --no-interaction --no-scripts --no-suggest --no-progress --no-ansi"
+        ]
+    }
+}

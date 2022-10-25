@@ -1,0 +1,143 @@
+{
+    "alias": "gerencianet",
+    "icon": "credit_card",
+    "version": "1.0.0",
+    "active": 1,
+    "providers": [
+        "Modules\\Gerencianet\\Providers\\Event",
+        "Modules\\Gerencianet\\Providers\\Main",
+        "Modules\\Gerencianet\\Providers\\Observer"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "reports": [],
+    "widgets": [],
+    "settings": [
+        {
+            "type": "text",
+            "name": "name",
+            "title": "gerencianet::general.name",
+            "attributes": {
+                "required": "required"
+            },
+            "rules": "required|string"
+        },
+        {
+            "type": "text",
+            "name": "description",
+            "title": "gerencianet::general.description",
+            "attributes": {},
+            "rules": "nullable|string"
+        },
+        {
+            "type": "account",
+            "name": "account_id",
+            "attributes": {
+                "required": "required"
+            },
+            "rules": "required"
+        },
+        {
+            "type": "select",
+            "name": "mode",
+            "title": "gerencianet::general.form.mode",
+            "values": {
+                "live": "gerencianet::general.form.live",
+                "sandbox": "gerencianet::general.form.sandbox"
+            },
+            "selected": "live",
+            "attributes": {
+                "required": "required"
+            },
+            "rules": "required|string"
+        },
+        {
+            "type": "text",
+            "name": "client_id",
+            "title": "gerencianet::general.form.client_id",
+            "attributes": {
+                "required": "required"
+            },
+            "rules": "required|string"
+        },
+        {
+            "type": "text",
+            "name": "client_secret",
+            "title": "gerencianet::general.form.client_secret",
+            "attributes": {
+                "required": "required"
+            },
+            "rules": "required|string"
+        },
+        {
+            "type": "textarea",
+            "name": "pix_cert",
+            "title": "gerencianet::general.form.pix_cert",
+            "tooltip": "gerencianet::general.form.pix_cert_tooltip",
+            "attributes": {
+                "required": "required",
+                "cols": "50",
+                "rows": "3"
+            },
+            "rules": "required|string"
+        },
+        {
+            "type": "number",
+            "name": "fine",
+            "title": "gerencianet::general.form.fine",
+            "attributes": {},
+            "rules": "nullable|numeric"
+        },
+        {
+            "type": "number",
+            "name": "fee",
+            "title": "gerencianet::general.form.fee",
+            "attributes": {},
+            "rules": "nullable|numeric"
+        },
+        {
+            "type": "vendor",
+            "name": "vendor_id",
+            "title": "gerencianet::general.form.vendor",
+            "tooltip": "gerencianet::general.form.vendor_tooltip",
+            "attributes": {},
+            "rules": "nullable|integer"
+        },
+        {
+            "type": "toggle",
+            "name": "email_attachment",
+            "title": "gerencianet::general.form.email_attachment",
+            "enable": "general.yes",
+            "disable": "general.no",
+            "attributes": {},
+            "rules": "required|integer"
+        },
+        {
+            "type": "number",
+            "name": "order",
+            "title": "gerencianet::general.form.order",
+            "attributes": {},
+            "rules": "nullable|integer"
+        },
+        {
+            "type": "toggle",
+            "name": "field_validations",
+            "title": "gerencianet::general.form.field_validations",
+            "enable": "general.yes",
+            "disable": "general.no",
+            "attributes": {},
+            "rules": "required|integer"
+        },
+        {
+            "type": "toggle",
+            "name": "customer",
+            "title": "gerencianet::general.form.customer",
+            "enable": "general.yes",
+            "disable": "general.no",
+            "attributes": {},
+            "rules": "required|integer"
+        }
+    ],
+    "extra-modules": {}
+}

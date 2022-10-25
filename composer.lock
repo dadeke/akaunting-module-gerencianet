@@ -1,0 +1,95 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "5a5fedf4cf615e00f823b5e5c9d7b009",
+    "packages": [
+        {
+            "name": "gerencianet/gerencianet-sdk-php",
+            "version": "4.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gerencianet/gn-api-sdk-php.git",
+                "reference": "ba787ae0f092213632abbc029bb44b4d98701d63"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gerencianet/gn-api-sdk-php/zipball/ba787ae0f092213632abbc029bb44b4d98701d63",
+                "reference": "ba787ae0f092213632abbc029bb44b4d98701d63",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.0",
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Gerencianet": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cecília Deveza"
+                },
+                {
+                    "name": "Danniel Hugo"
+                },
+                {
+                    "name": "Francisco Thiene"
+                },
+                {
+                    "name": "Talita Campos"
+                },
+                {
+                    "name": "Thomaz Feitoza"
+                },
+                {
+                    "name": "Filipe Mata"
+                },
+                {
+                    "name": "Thiago Resende"
+                },
+                {
+                    "name": "Jéssica Gava"
+                },
+                {
+                    "name": "Guilherme Cota"
+                },
+                {
+                    "name": "Sady Coimbra"
+                },
+                {
+                    "name": "Matheus Rodrigues"
+                },
+                {
+                    "name": "João Oliveira"
+                },
+                {
+                    "name": "Paloma Brito"
+                }
+            ],
+            "description": "GN API SDK PHP",
+            "support": {
+                "issues": "https://github.com/gerencianet/gn-api-sdk-php/issues",
+                "source": "https://github.com/gerencianet/gn-api-sdk-php/tree/4.1.1"
+            },
+            "time": "2021-12-01T13:26:09+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.2.0"
+}
