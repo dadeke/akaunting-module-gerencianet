@@ -29,6 +29,8 @@ return [
   'empty' => [
     'transactions' => 'No transaction has been created yet.'
   ],
+  'warning_expiry' => 'Warning: Your certificate will expire at :date and you will need to create the new certificate on <a href="https://app.gerencianet.com.br/api/meus-certificados" target="_blank"><strong>https://app.gerencianet.com.br/api/meus-certificados</strong></a> and replace the old one in the <a href=":url_setting"><strong>settings</strong></a>.',
+  'caution_expiry' => 'Caution: Your certificate is expiring at :date. Create the new certificate on <a href="https://app.gerencianet.com.br/api/meus-certificados" target="_blank"><strong>https://app.gerencianet.com.br/api/meus-certificados</strong></a> and replace the old one in the <a href=":url_setting"><strong>settings</strong></a> so that the integration does not stop.',
 
   'portal' => [
     'pix_info' => 'Use the camera of your phone to read the <br /><b>QR Code or copy the code</b> below to pay with your bank app.',

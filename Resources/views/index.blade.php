@@ -10,6 +10,14 @@
     ></x-slot>
 
     <x-slot name="content">
+        @if ($certExpiry != null)
+        <div @class(['rounded-xl px-5 py-3 my-5', "bg-{$certExpiry['color']}-100"])>
+            <p @class(['text-sm mb-0', "text-{$certExpiry['color']}-600"])>
+                {!! html_entity_decode($certExpiry['message']) !!}
+            </p>
+        </div>
+        @endif
+
         @if ($transactions->count() || request()->get('search', false))
             <x-index.container>
 

@@ -3,10 +3,14 @@
 namespace Modules\Gerencianet\Http\Controllers;
 
 use App\Abstracts\Http\Controller;
+use App\Traits\DateTime as TraitDateTime;
+use DateTime;
 use Modules\Gerencianet\Models\Transaction;
 
 class Transactions extends Controller
 {
+    use TraitDateTime;
+
     public function __construct()
     {
         // This is to clear the middlewares.
@@ -58,9 +62,42 @@ class Transactions extends Controller
             'document.transactions'
         );
 
+        // Show certificate expiration alert
+        $certExpiry = null;
+        $setting = setting('gerencianet');
+        $certificate = openssl_x509_parse($setting['pix_cert']);
+        $origin = new DateTime();
+        $origin->setTimestamp($certificate['validTo_time_t']);
+        $target = new DateTime();
+        $interval = $origin->diff($target);
+        $how_many_months = ($interval->y * 12) + $interval->m;
+        if($how_many_months <= 4) {
+            $alert_color = 'orange';
+            $trans_key = 'gerencianet::general.warning_expiry';
+
+            $replace = [
+                'date' => date(
+                    $this->getCompanyDateFormat(),
+                    $certificate['validTo_time_t']
+                ),
+                'url_setting' => route('settings.module.edit', ['gerencianet'])
+            ];
+
+            if($how_many_months <= 2) {
+                $alert_color = 'red';
+                $trans_key = 'gerencianet::general.caution_expiry';
+            }
+
+            $certExpiry = [
+                'color' => $alert_color,
+                'message' => trans($trans_key, $replace)
+            ];
+        }
+
         return $this->response('gerencianet::index', [
             'transactions' => $transactions,
-            'emptyPageButtons' => $emptyPageButtons
+            'emptyPageButtons' => $emptyPageButtons,
+            'certExpiry' => $certExpiry
         ]);
     }
 }
