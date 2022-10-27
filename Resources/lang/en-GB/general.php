@@ -25,7 +25,6 @@ return [
   ],
 
   'transactions' => 'Gerencianet',
-  'information' => 'Information',
   'empty' => [
     'transactions' => 'No transaction has been created yet.'
   ],
@@ -34,8 +33,7 @@ return [
 
   'portal' => [
     'pix_info' => 'Use the camera of your phone to read the <br /><b>QR Code or copy the code</b> below to pay with your bank app.',
-    'copied' => 'Copied!',
-    'view_pdf' => 'View PDF'
+    'copied' => 'Copied!'
   ],
 
   'email' => [

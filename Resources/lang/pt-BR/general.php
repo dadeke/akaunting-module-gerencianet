@@ -25,7 +25,6 @@ return [
   ],
 
   'transactions' => 'Gerencianet',
-  'information' => 'Informações',
   'empty' => [
     'transactions' => 'Ainda não foi criada nenhuma transação.'
   ],
@@ -34,8 +33,7 @@ return [
 
   'portal' => [
     'pix_info' => 'Utilize a câmera do seu celular para ler o <br /><b>QR Code ou copie o código</b> abaixo para pagar com o app do seu banco.',
-    'copied' => 'Copiado!',
-    'view_pdf' => 'Visualizar PDF'
+    'copied' => 'Copiado!'
   ],
 
   'email' => [
