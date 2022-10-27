@@ -36,5 +36,10 @@ return [
     'pix_info' => 'Utilize a câmera do seu celular para ler o <br /><b>QR Code ou copie o código</b> abaixo para pagar com o app do seu banco.',
     'copied' => 'Copiado!',
     'view_pdf' => 'Visualizar PDF'
+  ],
+
+  'email' => [
+    'pix_image' => 'Use a câmera do seu celular para ler o <strong>QR Code</strong>:',
+    'pix_code' => '<strong>Ou copie o código</strong> e pague no app do seu banco:'
   ]
 ];
