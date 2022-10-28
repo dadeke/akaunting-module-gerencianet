@@ -10,4 +10,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('{company_id}/gerencianet/webhook/{webhook_secret}',
     'Modules\Gerencianet\Http\Controllers\Webhook@index')
-    ->name('inter-br.invoices.webhook');
+    ->name('gerencianet.invoices.webhook');

@@ -42,110 +42,134 @@ class Webhook extends Controller
             return response()->json([ 'status' => '401' ], 401);
         }
 
+        $document = null;
+        $transaction = null;
+        $pix = [];
         if (! empty($event['pix'])) {
             $pix = $event['pix'][0];
-            $document = null;
             $transaction = Transaction::where('txid', $pix['txid'])
                 ->first();
 
             if ($transaction !== null) {
                 $document = Document::find($transaction->document_id);
             }
+        }
+
+        if (
+            $document !== null &&
+            $document->status !== 'paid' &&
+            empty($pix['devolucoes'])
+        ) {
+            $paid_at = explode('T', $pix['horario']);
+            $paid_at = $paid_at[0];
+
+            $request = [
+                'type' => 'income',
+                'payment_method' => $this->alias,
+                'paid_at' => $paid_at,
+                'amount' => $pix['valor'],
+                'account_id' => $setting['account_id'],
+                'description' => $pix['infoPagador']
+            ];
+
+            event(new PaymentReceived($document, $request));
 
             if (
-                $document !== null &&
-                $document->status !== 'paid' &&
-                empty($pix['devolucoes'])
-            )
-            {
-                $paid_at = explode('T', $pix['horario']);
-                $paid_at = $paid_at[0];
-
-                $request = [
-                    'type' => 'income',
-                    'payment_method' => $this->alias,
-                    'paid_at' => $paid_at,
-                    'amount' => $pix['valor'],
+                ! empty($setting['vendor_id']) &&
+                ! empty($pix['gnExtras'])
+            ) {
+                $this->dispatch(new CreateTransaction([
+                    'company_id' => company_id(),
+                    'type' => BankingTransaction::EXPENSE_TYPE,
+                    'number' => $this->getNextTransactionNumber(),
                     'account_id' => $setting['account_id'],
-                    'description' => $pix['infoPagador']
-                ];
-
-                event(new PaymentReceived($document, $request));
-
-                if(
-                    ! empty($setting['vendor_id']) &&
-                    ! empty($pix['gnExtras'])
-                )
-                {
-                    $this->dispatch(new CreateTransaction([
-                        'company_id' => company_id(),
-                        'type' => BankingTransaction::EXPENSE_TYPE,
-                        'number' => $this->getNextTransactionNumber(),
-                        'account_id' => $setting['account_id'],
-                        'paid_at' => $paid_at,
-                        'amount' => $pix['gnExtras']['tarifa'],
-                        'currency_code' => 'BRL',
-                        'currency_rate' => 1,
-                        'contact_id' => $setting['vendor_id'],
-                        'description' => 'Gerencianet - Tarifa',
-                        'category_id' => 1,
-                        'payment_method' => 'offline-payments.bank_transfer.2',
-                        'reference' => $document->document_number,
-                        'created_from' => 'webhook'
-                    ]));
-                }
-
-                Log::info('module=Gerencianet'
-                    . ' action=Webhook'
-                    . ' type=' . BankingTransaction::INCOME_TYPE
-                    . ' document_id=' . $document->id
-                    . ' response=' . json_encode($event)
-                );
+                    'paid_at' => $paid_at,
+                    'amount' => $pix['gnExtras']['tarifa'],
+                    'currency_code' => 'BRL',
+                    'currency_rate' => 1,
+                    'contact_id' => $setting['vendor_id'],
+                    'description' => 'Gerencianet - Tarifa',
+                    'category_id' => 1,
+                    'payment_method' => 'offline-payments.bank_transfer.2',
+                    'reference' => $document->document_number,
+                    'created_from' => 'webhook'
+                ]));
             }
 
-            if(! empty($pix['devolucoes']))
-            {
-                foreach($pix['devolucoes'] as $refund) {
-                    if($refund['status'] != 'DEVOLVIDO') {
-                        continue;
-                    }
+            Log::info(
+                'module=Gerencianet'
+                . ' action=Webhook'
+                . ' type=' . BankingTransaction::INCOME_TYPE
+                    . ' document_id=' . $document->id
+                    . ' response=' . json_encode($event)
+            );
+        }
+        else if (
+            $document !== null &&
+            $document->status === 'paid'
+        ) {
+            foreach ($pix['devolucoes'] as $refund) {
+                if ($refund['status'] != 'DEVOLVIDO') {
+                    continue;
+                }
 
-                    $refund_at = explode('T', $refund['horario']['solicitacao']);
-                    $refund_at = $refund_at[0];
+                $refund_at = explode('T', $refund['horario']['solicitacao']);
+                $refund_at = $refund_at[0];
 
-                    // If full refund
-                    if($document->amount === floatval($refund['valor'])) {
-                        $transaction->delete();
+                // If full refund
+                if ($document->amount === floatval($refund['valor'])) {
+                    $transaction->delete();
 
-                        $this->dispatch(new CancelDocument($document));
-                    }
-                    else {
+                    $this->dispatch(new CancelDocument($document));
+
+                    if (
+                        ! empty($setting['vendor_id']) &&
+                        ! empty($pix['gnExtras'])
+                    ) {
                         $this->dispatch(new CreateTransaction([
                             'company_id' => company_id(),
-                            'type' => BankingTransaction::EXPENSE_TYPE,
+                            'type' => BankingTransaction::INCOME_TYPE,
                             'number' => $this->getNextTransactionNumber(),
                             'account_id' => $setting['account_id'],
                             'paid_at' => $refund_at,
-                            'amount' => $refund['valor'],
+                            'amount' => $pix['gnExtras']['tarifa'],
                             'currency_code' => 'BRL',
                             'currency_rate' => 1,
-                            'contact_id' => $document->contact_id,
-                            'description' => 'Gerencianet - Devolução parcial',
+                            'contact_id' => $setting['vendor_id'],
+                            'description' => 'Gerencianet - Devolução da Tarifa',
                             'category_id' => 1,
                             'payment_method' => 'offline-payments.bank_transfer.2',
                             'reference' => $document->document_number,
                             'created_from' => 'webhook'
                         ]));
                     }
+                } else {
+                    $this->dispatch(new CreateTransaction([
+                        'company_id' => company_id(),
+                        'type' => BankingTransaction::EXPENSE_TYPE,
+                        'number' => $this->getNextTransactionNumber(),
+                        'account_id' => $setting['account_id'],
+                        'paid_at' => $refund_at,
+                        'amount' => $refund['valor'],
+                        'currency_code' => 'BRL',
+                        'currency_rate' => 1,
+                        'contact_id' => $document->contact_id,
+                        'description' => 'Gerencianet - Devolução parcial',
+                        'category_id' => 1,
+                        'payment_method' => 'offline-payments.bank_transfer.2',
+                        'reference' => $document->document_number,
+                        'created_from' => 'webhook'
+                    ]));
                 }
+            }
 
-                Log::info('module=Gerencianet'
-                    . ' action=Webhook'
-                    . ' type=' . BankingTransaction::EXPENSE_TYPE
+            Log::info(
+                'module=Gerencianet'
+                . ' action=Webhook'
+                . ' type=' . BankingTransaction::EXPENSE_TYPE
                     . ' document_id=' . $document->id
                     . ' response=' . json_encode($event)
-                );
-            }
+            );
         }
 
         return response()->json(['status' => '200']);
