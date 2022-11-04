@@ -28,13 +28,10 @@
                 id="qrcode_text"
                 type="text"
                 value="{{ $payment['qrcode'] }}"
-                onclick="this.setSelectionRange(0, this.value.length); document.execCommand('copy'); document.getElementById('qrcode_copied').setAttribute('class', 'flex justify-center');"
+                onclick="this.setSelectionRange(0, this.value.length); document.execCommand('copy'); this.nextElementSibling.setAttribute('class', 'flex justify-center');"
                 class="w-full"
             />
-            <span
-                id="qrcode_copied"
-                class="hidden"
-            >
+            <span class="hidden">
                 <strong>{{ trans('gerencianet::general.portal.copied') }}</strong>
             </span>
         </div>
