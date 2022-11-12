@@ -31,10 +31,6 @@
                 <x-table>
                     <x-table.thead>
                         <x-table.tr class="flex items-center px-1">
-                            <x-table.th class="ltr:pr-6 rtl:pl-6 hidden sm:table-cell" override="class">
-                                <x-index.bulkaction.all />
-                            </x-table.th>
-
                             @stack('due_at_and_issued_at_th_start')
                             <x-table.th class="w-4/12 table-title hidden sm:table-cell">
                                 @stack('due_at_th_start')
@@ -118,13 +114,6 @@
                             $url = route('preview.invoices.show', [$item->id]);
                             @endphp
                             <x-table.tr onclick="window.open('{{ $url }}', '_blank');">
-                                <x-table.td class="ltr:pr-6 rtl:pl-6 hidden sm:table-cell" override="class">
-                                    <x-index.bulkaction.single
-                                        id="{{ $item->id }}"
-                                        name="{{ $item->document_number }}"
-                                    />
-                                </x-table.td>
-
                                 @stack('due_at_and_issued_at_td_start')
                                 <x-table.td class="w-4/12 table-title hidden sm:table-cell">
                                     @stack('due_at_td_start')
