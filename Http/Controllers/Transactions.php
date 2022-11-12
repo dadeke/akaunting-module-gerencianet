@@ -94,7 +94,7 @@ class Transactions extends Controller
             ];
         }
 
-        return $this->response('gerencianet::index', [
+        return $this->response('gerencianet::admin.index', [
             'transactions' => $transactions,
             'emptyPageButtons' => $emptyPageButtons,
             'certExpiry' => $certExpiry

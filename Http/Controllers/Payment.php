@@ -39,7 +39,7 @@ class Payment extends PaymentController
             try {
                 $payment = $this->pixGenerateQRCode($transaction->location_id);
 
-                $html = view('gerencianet::show', compact('setting', 'payment'))
+                $html = view('gerencianet::portal.show', compact('setting', 'payment'))
                             ->render();
             }
             catch(\Exception $e) {
@@ -52,11 +52,11 @@ class Payment extends PaymentController
                     . ' error=' . $message
                 );
 
-                $html = view('gerencianet::unavailable')->render();
+                $html = view('gerencianet::portal.unavailable')->render();
             }
         }
         else {
-            $html = view('gerencianet::unavailable')->render();
+            $html = view('gerencianet::portal.unavailable')->render();
         }
 
         return response()->json([

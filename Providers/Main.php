@@ -118,7 +118,7 @@ class Main extends Provider
                 if($field_validations === '1') {
                     $view->getFactory()->startPrepend(
                         'scripts_end',
-                        view('gerencianet::_script')
+                        view('gerencianet::admin._script')
                     );
                 }
             }
