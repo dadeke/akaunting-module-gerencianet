@@ -37,7 +37,7 @@
                                 <x-slot name="first">
                                     @stack('due_at_th_inside_start')
                                     <x-sortablelink
-                                        column="due_at"
+                                        column="document.due_at"
                                         title="{{ trans('invoices.due_date') }}"
                                     />
                                     @stack('due_at_th_inside_end')
@@ -48,7 +48,7 @@
                                 <x-slot name="second">
                                     @stack('issued_at_th_inside_start')
                                     <x-sortablelink
-                                        column="issued_at"
+                                        column="document.issued_at"
                                         title="{{ trans('invoices.invoice_date') }}"
                                     />
                                     @stack('issued_at_th_inside_end')
@@ -61,7 +61,7 @@
                             <x-table.th class="w-3/12 table-title hidden sm:table-cell">
                                 @stack('status_th_inside_start')
                                 <x-sortablelink
-                                    column="status"
+                                    column="document.status"
                                     title="{{ trans_choice('general.statuses', 1) }}"
                                 />
                                 @stack('status_th_inside_end')
@@ -74,7 +74,7 @@
                                 <x-slot name="first">
                                     @stack('contact_name_th_inside_start')
                                     <x-sortablelink
-                                        column="contact_name"
+                                        column="document.contact_name"
                                         title="{{ trans_choice('general.customers', 1) }}"
                                     />
                                     @stack('contact_name_th_inside_end')
@@ -85,7 +85,7 @@
                                 <x-slot name="second">
                                     @stack('document_number_th_inside_start')
                                     <x-sortablelink
-                                        column="document_number"
+                                        column="document.document_number"
                                         title="{{ trans_choice('general.numbers', 1) }}"
                                     />
                                     @stack('document_number_th_inside_end')
@@ -98,7 +98,7 @@
                             <x-table.th class="w-6/12 sm:w-2/12" kind="amount">
                                 @stack('amount_th_inside_start')
                                 <x-sortablelink
-                                    column="amount"
+                                    column="document.amount"
                                     title="{{ trans('general.amount') }}"
                                 />
                                 @stack('amount_th_inside_end')

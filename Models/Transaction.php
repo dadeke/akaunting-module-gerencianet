@@ -17,7 +17,15 @@ class Transaction extends Model
         'txid'
     ];
 
-    public $sortable = ['document_id'];
+    public $sortable = [
+        'document_id',
+        'document.due_at',
+        'document.issued_at',
+        'document.status',
+        'document.contact_name',
+        'document.document_number',
+        'document.amount'
+    ];
 
     public function document()
     {
