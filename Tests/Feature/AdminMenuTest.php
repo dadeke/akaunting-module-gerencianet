@@ -15,7 +15,7 @@ class AdminMenuTest extends FeatureTestCase
             ->get(route('dashboard'))
             ->assertOk()
             ->assertSee(route('gerencianet.transactions.index'))
-            ->assertSee(trans_choice('gerencianet::general.transactions', 2));
+            ->assertSee(trans('gerencianet::general.transactions'));
     }
 
     public function testItShouldNotSeeAdminTransactionsMenuItem()

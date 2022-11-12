@@ -1,10 +1,10 @@
 <x-layouts.admin>
     <x-slot name="title">
-        {{ trans_choice('gerencianet::general.transactions', 2) }}
+        {{ trans('gerencianet::general.transactions') }}
     </x-slot>
 
     <x-slot name="favorite"
-        title="{{ trans_choice('gerencianet::general.transactions', 2) }}"
+        title="{{ trans('gerencianet::general.transactions') }}"
         icon="description"
         route="gerencianet.transactions.index"
     ></x-slot>

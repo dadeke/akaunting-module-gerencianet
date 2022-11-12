@@ -26,6 +26,6 @@ class TransactionTest extends FeatureTestCase
         $this->loginAs()
             ->get(route('gerencianet.transactions.index'))
             ->assertStatus(200)
-            ->assertSeeText(trans_choice('gerencianet::general.transactions', 2));
+            ->assertSeeText(trans('gerencianet::general.transactions'));
     }
 }
