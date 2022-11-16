@@ -4,14 +4,14 @@ namespace Modules\Gerencianet\Listeners;
 
 use App\Events\Document\DocumentCreated as Event;
 use App\Models\Document\Document;
-use App\Models\Module\Module;
+use App\Traits\Modules;
 use Illuminate\Support\Facades\Log;
 use Modules\Gerencianet\Models\Transaction;
 use Modules\Gerencianet\Traits\Gerencianet;
 
 class DocumentCreated
 {
-    use Gerencianet;
+    use Modules, Gerencianet;
 
     private function getOnlyNumbers($string) {
         return preg_replace('/[^0-9]/', '', $string);
@@ -52,14 +52,13 @@ class DocumentCreated
 
     public function execute(Document $document)
     {
-        $module = Module::enabled()->where('alias', 'gerencianet')->first();
         $setting = setting('gerencianet');
 
-        if(empty($module) ||
-            (! empty($module) && $module->enable === false) ||
+        if(
+            $this->moduleIsDisabled('gerencianet') ||
             $setting === null ||
-            ! array_key_exists('client_id', $setting))
-        {
+            ! array_key_exists('client_id', $setting)
+        ) {
             return;
         }
 
