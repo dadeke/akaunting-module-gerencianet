@@ -53,7 +53,7 @@ class Transactions extends Controller
                 fn($query) => $query->select('id')
                     ->whereIn('status', $statuses)
             )
-            ->collect(['document_id'=> 'desc']);
+            ->collect(['document.issued_at' => 'desc']);
 
         // Eager loading
         $transactions->load(
