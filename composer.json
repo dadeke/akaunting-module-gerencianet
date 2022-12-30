@@ -21,7 +21,7 @@
         "role": "Web Developer"
     }],
     "require": {
-        "gerencianet/gerencianet-sdk-php": "^4.1"
+        "gerencianet/gerencianet-sdk-php": "^5"
     },
     "replace": {
         "guzzlehttp/guzzle": "*",

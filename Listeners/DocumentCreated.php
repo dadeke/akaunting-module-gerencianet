@@ -164,7 +164,7 @@ class DocumentCreated
                 )->first();
 
                 if($transaction === null) {
-                    $pix = $this->pixCreateChargeWithDueDate($body);
+                    $pix = $this->pixCreateDueCharge($body);
                     Transaction::create([
                         'company_id'  => $document->company_id,
                         'document_id' => $document->id,
@@ -175,7 +175,7 @@ class DocumentCreated
                 }
                 else {
                     $action = 'Update';
-                    $this->pixUpdateChargeWithDueDate($transaction->txid, $body);
+                    $this->pixUpdateDueCharge($transaction->txid, $body);
                     $txid = $transaction->txid;
                 }
 

@@ -4,30 +4,30 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5a5fedf4cf615e00f823b5e5c9d7b009",
+    "content-hash": "891f769a6e3c0b8a91edfc70c1b9cf1d",
     "packages": [
         {
             "name": "gerencianet/gerencianet-sdk-php",
-            "version": "4.1.1",
+            "version": "5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gerencianet/gn-api-sdk-php.git",
-                "reference": "ba787ae0f092213632abbc029bb44b4d98701d63"
+                "reference": "0e234dcc44440ee84f5aa71f4bdc0f9364504450"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gerencianet/gn-api-sdk-php/zipball/ba787ae0f092213632abbc029bb44b4d98701d63",
-                "reference": "ba787ae0f092213632abbc029bb44b4d98701d63",
+                "url": "https://api.github.com/repos/gerencianet/gn-api-sdk-php/zipball/0e234dcc44440ee84f5aa71f4bdc0f9364504450",
+                "reference": "0e234dcc44440ee84f5aa71f4bdc0f9364504450",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.0",
-                "php": ">=7.2"
+                "php": "^7.2 || ^8.0"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Gerencianet": "src/"
+                "psr-4": {
+                    "Gerencianet\\": "src/Gerencianet"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -75,12 +75,13 @@
                     "name": "Paloma Brito"
                 }
             ],
-            "description": "GN API SDK PHP",
+            "description": "GN APIs SDK PHP",
+            "homepage": "https://github.com/gerencianet/gn-api-sdk-php",
             "support": {
                 "issues": "https://github.com/gerencianet/gn-api-sdk-php/issues",
-                "source": "https://github.com/gerencianet/gn-api-sdk-php/tree/4.1.1"
+                "source": "https://github.com/gerencianet/gn-api-sdk-php/tree/5.1.0"
             },
-            "time": "2021-12-01T13:26:09+00:00"
+            "time": "2022-12-21T13:23:23+00:00"
         }
     ],
     "packages-dev": [],

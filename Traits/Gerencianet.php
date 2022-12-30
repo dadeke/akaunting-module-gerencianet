@@ -48,7 +48,7 @@ trait Gerencianet
         $this->api = GerencianetVendor::getInstance($current_options);
     }
 
-    public function pixCreateChargeWithDueDate(array $body): array
+    public function pixCreateDueCharge(array $body): array
     {
         $txid = Str::uuid()->toString();
         $txid = str_replace('-', '', $txid);
@@ -69,13 +69,13 @@ trait Gerencianet
             $modifiedBody['chave'] = $keys['chaves'][0];
         }
 
-        $pix = $this->api->pixCreateChargeWithDueDate($params, $modifiedBody);
+        $pix = $this->api->pixCreateDueCharge($params, $modifiedBody);
         $this->deleteTemporaryFiles();
 
         return $pix;
     }
 
-    public function pixUpdateChargeWithDueDate(string $txid, array $body): void
+    public function pixUpdateDueCharge(string $txid, array $body): void
     {
         $params = [
             'txid' => $txid
@@ -92,7 +92,7 @@ trait Gerencianet
             $modifiedBody['chave'] = $keys['chaves'][0];
         }
 
-        $this->api->pixUpdateChargeWithDueDate($params, $modifiedBody);
+        $this->api->pixUpdateDueCharge($params, $modifiedBody);
         $this->deleteTemporaryFiles();
     }
 
@@ -109,7 +109,7 @@ trait Gerencianet
         return $qrcode;
     }
 
-    public function pixCancelChargeWithDueDate(string $txid): void
+    public function pixCancelDueCharge(string $txid): void
     {
         $params = [
             'txid' => $txid
@@ -120,7 +120,7 @@ trait Gerencianet
         ];
 
         $this->newInstance();
-        $this->api->pixUpdateChargeWithDueDate($params, $body);
+        $this->api->pixUpdateDueCharge($params, $body);
         $this->deleteTemporaryFiles();
     }
 

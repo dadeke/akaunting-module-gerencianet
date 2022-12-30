@@ -44,7 +44,7 @@ class DocumentCancelled
         if(in_array($document->type, $types) && $transaction !== null)
         {
             try {
-                $this->pixCancelChargeWithDueDate($transaction->txid);
+                $this->pixCancelDueCharge($transaction->txid);
 
                 Log::info('module=Gerencianet'
                     . ' action=Cancel'
