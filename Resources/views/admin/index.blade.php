@@ -111,7 +111,7 @@
                         @foreach($transactions as $transaction)
                             @php
                             $item = $transaction->document;
-                            $url = route('preview.invoices.show', [$item->id]);
+                            $url = URL::signedRoute('signed.invoices.show', [$item->id]);
                             @endphp
                             <x-table.tr onclick="window.open('{{ $url }}', '_blank');">
                                 @stack('due_at_and_issued_at_td_start')

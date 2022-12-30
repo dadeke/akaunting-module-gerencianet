@@ -3,6 +3,7 @@
 namespace Modules\Gerencianet\Models;
 
 use App\Abstracts\Model;
+use Illuminate\Support\Facades\URL;
 
 class Transaction extends Model
 {
@@ -64,7 +65,7 @@ class Transaction extends Model
         $actions[] = [
             'title' => trans('general.show'),
             'icon' => 'visibility',
-            'url' => route('preview.invoices.show', [$this->document_id]),
+            'url' => URL::signedRoute('signed.invoices.show', [$this->document_id]),
             'permission' => 'read-' . $group . '-' . $permission_prefix,
             'attributes' => [
                 'target' => '_blank',
