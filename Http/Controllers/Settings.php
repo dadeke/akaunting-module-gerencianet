@@ -7,6 +7,7 @@ use App\Http\Requests\Setting\Module as Request;
 use App\Models\Banking\Account;
 use App\Models\Setting\Setting;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Modules\Gerencianet\Traits\Gerencianet;
 
 class Settings extends Modules
@@ -54,9 +55,26 @@ class Settings extends Modules
      */
     public function update($alias, Request $request)
     {
+        $setting = setting();
+
         $response = parent::update($alias, $request);
 
-        $this->pixConfigWebhook();
+        try {
+            $this->pixConfigWebhook();
+
+            $certificate = openssl_x509_parse($request['pix_cert']);
+            $setting->set(
+                'gerencianet.cert_timestamp',
+                $certificate['validTo_time_t']
+            );
+            $setting->save();
+        }
+        catch(\Exception $e) {
+            Log::error('module=Gerencianet'
+                . ' action=Webhook'
+                . ' response=' . $e->getMessage()
+            );
+        }
 
         return $response;
     }

@@ -2,12 +2,15 @@
 
 namespace Modules\Gerencianet\Traits;
 
+use App\Traits\DateTime as TraitDateTime;
 use Gerencianet\Gerencianet as GerencianetVendor;
 use Gerencianet\Endpoints as GerencianetEndpoints;
 use Illuminate\Support\Str;
 
 trait Gerencianet
 {
+    use TraitDateTime;
+
     private GerencianetEndpoints $api;
 
     private bool $sandbox;
@@ -164,5 +167,45 @@ trait Gerencianet
         ];
         $this->api->pixConfigWebhook($params, $body);
         $this->deleteTemporaryFiles();
+    }
+
+    public function getCertExpiry() {
+        $certExpiry = null;
+        $certTimestamp = setting('gerencianet.cert_timestamp');
+        if ($certTimestamp !== null) {
+            $origin = new \DateTime();
+            $origin->setTimestamp($certTimestamp);
+            $target = new \DateTime();
+            $interval = $target->diff($origin);
+            $howManyMonths = ($interval->y * 12) + $interval->m;
+            if($interval->invert === 1) {
+                $howManyMonths = $howManyMonths * -1;
+            }
+
+            if($howManyMonths <= 4) {
+                $alertColor = 'orange';
+                $transKey = 'gerencianet::general.cert_expiry_warning';
+
+                $replace = [
+                    'date' => date(
+                        $this->getCompanyDateFormat(),
+                        $certTimestamp
+                    ),
+                    'url_setting' => route('settings.module.edit', ['gerencianet'])
+                ];
+
+                if($howManyMonths <= 2) {
+                    $alertColor = 'red';
+                    $transKey = 'gerencianet::general.caution_cert_expiry';
+                }
+
+                $certExpiry = [
+                    'color' => $alertColor,
+                    'message' => trans($transKey, $replace)
+                ];
+            }
+        }
+
+        return $certExpiry;
     }
 }

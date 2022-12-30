@@ -28,8 +28,8 @@ return [
   'empty' => [
     'transactions' => 'Ainda não foi criada nenhuma transação.'
   ],
-  'warning_expiry' => 'Alerta: Seu certificado vai expirar no dia :date e será preciso criar o novo certificado em <a href="https://app.gerencianet.com.br/api/meus-certificados" target="_blank"><strong>https://app.gerencianet.com.br/api/meus-certificados</strong></a> e substituir o antigo nas <a href=":url_setting"><strong>configurações</strong></a>.',
-  'caution_expiry' => 'Cuidado: Seu certificado está expirando no dia :date. Crie o novo certificado em <a href="https://app.gerencianet.com.br/api/meus-certificados" target="_blank"><strong>https://app.gerencianet.com.br/api/meus-certificados</strong></a> e substitua o antigo nas <a href=":url_setting"><strong>configurações</strong></a> para que a integração não seja interrompida.',
+  'cert_expiry_warning' => 'Alerta: Seu certificado vai expirar no dia :date e será preciso criar o novo certificado em <a href="https://app.gerencianet.com.br/api/meus-certificados" target="_blank"><strong>https://app.gerencianet.com.br/api/meus-certificados</strong></a> e substituir o antigo nas <a href=":url_setting"><strong>configurações</strong></a>.',
+  'caution_cert_expiry' => 'Cuidado: Seu certificado está expirando no dia :date. Crie o novo certificado em <a href="https://app.gerencianet.com.br/api/meus-certificados" target="_blank"><strong>https://app.gerencianet.com.br/api/meus-certificados</strong></a> e substitua o antigo nas <a href=":url_setting"><strong>configurações</strong></a> para que a integração não seja interrompida.',
 
   'portal' => [
     'pix_info' => 'Utilize a câmera do seu celular para ler o <br /><b>QR Code ou copie o código</b> abaixo para pagar com o app do seu banco.',
