@@ -37,8 +37,11 @@ class NotificationSending
                 'viewed'
             ];
 
-            if (in_array($event->notification->invoice->status, $statuses)
-                && $setting['email_attachment'] === '1')
+            if (
+                $setting['email_attachment'] === '1' &&
+                in_array($event->notification->invoice->status, $statuses) &&
+                $event->notification->template->alias != 'invoice_view_admin'
+            )
             {
                 $transaction = new Transaction(
                     $event->notification->invoice,
