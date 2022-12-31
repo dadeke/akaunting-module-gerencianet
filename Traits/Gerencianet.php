@@ -144,6 +144,7 @@ trait Gerencianet
             $app_setting->save();
         }
 
+        $webhook_registered = null;
         $webhook = url(company_id() . '/gerencianet/webhook/' . $webhook_secret);
         // $webhook = 'https://test.com/' . company_id() . '/gerencianet/webhook/' . $webhook_secret;
 
@@ -162,10 +163,30 @@ trait Gerencianet
             $keys = $this->api->pixListEvp([], []);
             $params['chave'] = $keys['chaves'][0];
         }
-        $body = [
-            'webhookUrl' => $webhook
-        ];
-        $this->api->pixConfigWebhook($params, $body);
+
+        try {
+            $response = $this->api->pixDetailWebhook($params);
+
+            if(array_key_exists('webhookUrl', $response)) {
+                $webhook_registered = $response['webhookUrl'];
+            }
+        }
+        catch(\Exception $e) {
+            if(
+                ! property_exists($e, 'error') ||
+                $e->error != 'webhook_nao_encontrado'
+            ) {
+                throw $e;
+            }
+        }
+
+        if(empty($webhook_registered) || $webhook_registered != $webhook) {
+            $body = [
+                'webhookUrl' => $webhook
+            ];
+            $this->api->pixConfigWebhook($params, $body);
+        }
+
         $this->deleteTemporaryFiles();
     }
 

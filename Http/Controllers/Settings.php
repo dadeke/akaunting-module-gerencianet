@@ -70,9 +70,21 @@ class Settings extends Modules
             $setting->save();
         }
         catch(\Exception $e) {
+            $message = null;
+
+            if(
+                property_exists($e, 'error') &&
+                property_exists($e, 'errorDescription')
+            ) {
+                    $message = $e->error . ' ' . json_encode($e->errorDescription);
+            }
+            else {
+                $message = $e->getMessage();
+            }
+
             Log::error('module=Gerencianet'
                 . ' action=Webhook'
-                . ' response=' . $e->getMessage()
+                . ' response=' . $message
             );
         }
 
