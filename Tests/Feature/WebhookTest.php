@@ -42,7 +42,11 @@ class WebhookTest extends FeatureTestCase
             'webhook_secret' => '6e42125b-3744-456b-b629-6b431f3795e0'
         ];
 
-        $this->post(route('gerencianet.invoices.webhook', $parameters))
-            ->assertStatus(400);
+        $data = [
+            'status' => '200'
+        ];
+
+        $this->post(route('gerencianet.invoices.webhook', $parameters), $data)
+            ->assertStatus(401);
     }
 }
