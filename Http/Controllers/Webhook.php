@@ -10,7 +10,8 @@ use App\Models\Banking\Transaction as BankingTransaction;
 use App\Models\Document\Document;
 use App\Traits\Transactions as TransactionsTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log as FacadeLog;
+use Modules\Gerencianet\Models\Log;
 use Modules\Gerencianet\Models\Transaction;
 
 class Webhook extends Controller
@@ -96,13 +97,25 @@ class Webhook extends Controller
                 ]));
             }
 
-            Log::info(
-                'module=Gerencianet'
-                . ' action=Webhook'
-                . ' type=' . BankingTransaction::INCOME_TYPE
+            if($setting['logs'] == '1') {
+                Log::create([
+                    'company_id' => $document->company_id,
+                    'document_id' => $document->id,
+                    'action' => 'webhook',
+                    'error' => false,
+                    'message' => 'type=' . BankingTransaction::INCOME_TYPE
+                        . ' response=' . json_encode($event, JSON_UNESCAPED_UNICODE)
+                ]);
+            }
+            else {
+                FacadeLog::info(
+                    'module=Gerencianet'
+                    . ' action=Webhook'
                     . ' document_id=' . $document->id
-                    . ' response=' . json_encode($event)
-            );
+                    . ' type=' . BankingTransaction::INCOME_TYPE
+                    . ' response=' . json_encode($event, JSON_UNESCAPED_UNICODE)
+                );
+            }
         }
         else if (
             $document !== null &&
@@ -163,13 +176,25 @@ class Webhook extends Controller
                 }
             }
 
-            Log::info(
-                'module=Gerencianet'
-                . ' action=Webhook'
-                . ' type=' . BankingTransaction::EXPENSE_TYPE
+            if($setting['logs'] == '1') {
+                Log::create([
+                    'company_id' => $document->company_id,
+                    'document_id' => $document->id,
+                    'action' => 'webhook',
+                    'error' => false,
+                    'message' => 'type=' . BankingTransaction::EXPENSE_TYPE
+                        . ' response=' . json_encode($event, JSON_UNESCAPED_UNICODE)
+                ]);
+            }
+            else {
+                FacadeLog::info(
+                    'module=Gerencianet'
+                    . ' action=Webhook'
                     . ' document_id=' . $document->id
-                    . ' response=' . json_encode($event)
-            );
+                    . ' type=' . BankingTransaction::EXPENSE_TYPE
+                    . ' response=' . json_encode($event, JSON_UNESCAPED_UNICODE)
+                );
+            }
         }
 
         return response()->json(['status' => '200']);

@@ -63,7 +63,9 @@ class Transactions extends Controller
         );
 
         return $this->response('gerencianet::admin.index', [
-            'transactions' => $transactions,
+            'records' => $transactions,
+            'tabActive' => 'transactions',
+            'withoutTabs' => ! setting('gerencianet.logs') == '1',
             'emptyPageButtons' => $emptyPageButtons,
             'certExpiry' => $this->getCertExpiry()
         ]);

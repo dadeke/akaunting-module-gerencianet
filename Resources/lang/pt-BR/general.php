@@ -21,12 +21,30 @@ return [
     'email_attachment'  => 'Anexar a imagem do QR Code do Pix às notificações de e-mail',
     'order'             => 'Ordem',
     'field_validations' => 'Ativar validações de campos na tela Clientes',
+    'logs'              => 'Ativar logs',
     'customer'          => 'Mostrar ao Cliente'
   ],
 
   'transactions' => 'Gerencianet',
+  'transactions_tab' => 'Transações',
+  'logs_tab' => 'Logs',
   'empty' => [
-    'transactions' => 'Ainda não foi criada nenhuma transação.'
+    'transactions' => 'Ainda não foi criada nenhuma transação.',
+    'logs' => 'Ainda não foi criado nenhum log.'
+  ],
+  'log' => [
+    'execution_date' => 'Data da Execução',
+    'action' => 'Ação',
+    'message' => 'Mensagem',
+    'success' => 'Sucesso',
+    'error' => 'Erro',
+    'enable' => 'Ativa',
+    'disable' => 'Desativa',
+    'create' => 'Cria',
+    'update' => 'Atualiza',
+    'cancel' => 'Cancela',
+    'webhook' => 'Webhook',
+    'show' => 'Exibe'
   ],
   'cert_expiry_warning' => 'Alerta: Seu certificado vai expirar no dia :date e será preciso criar o novo certificado em <a href="https://app.gerencianet.com.br/api/meus-certificados" target="_blank"><strong>https://app.gerencianet.com.br/api/meus-certificados</strong></a> e substituir o antigo nas <a href=":url_setting"><strong>configurações</strong></a>.',
   'caution_cert_expiry' => 'Cuidado: Seu certificado está expirando no dia :date. Crie o novo certificado em <a href="https://app.gerencianet.com.br/api/meus-certificados" target="_blank"><strong>https://app.gerencianet.com.br/api/meus-certificados</strong></a> e substitua o antigo nas <a href=":url_setting"><strong>configurações</strong></a> para que a integração não seja interrompida.',

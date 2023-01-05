@@ -137,6 +137,15 @@
             "disable": "general.no",
             "attributes": {},
             "rules": "required|integer"
+        },
+        {
+            "type": "toggle",
+            "name": "logs",
+            "title": "gerencianet::general.form.logs",
+            "enable": "general.yes",
+            "disable": "general.no",
+            "attributes": {},
+            "rules": "required|integer"
         }
     ],
     "extra-modules": {}

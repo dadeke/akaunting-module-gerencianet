@@ -4,7 +4,8 @@ namespace Modules\Gerencianet\Listeners;
 
 use App\Events\Document\DocumentCancelled as Event;
 use App\Models\Document\Document;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log as FacadeLog;
+use Modules\Gerencianet\Models\Log;
 use Modules\Gerencianet\Models\Transaction;
 use Modules\Gerencianet\Traits\Gerencianet;
 
@@ -46,21 +47,43 @@ class DocumentCancelled
             try {
                 $this->pixCancelDueCharge($transaction->txid);
 
-                Log::info('module=Gerencianet'
-                    . ' action=Cancel'
-                    . ' document_id=' . $document->id
-                    . ' txid=' . $transaction->txid
-                );
+                if($setting['logs'] == '1') {
+                    Log::create([
+                        'company_id' => $document->company_id,
+                        'document_id' => $document->id,
+                        'action' => 'cancel',
+                        'error' => false,
+                        'message' => json_encode([
+                            'txid' => $transaction->txid
+                        ])
+                    ]);
+                }
+                else {
+                    FacadeLog::info('module=Gerencianet'
+                        . ' action=Cancel'
+                        . ' document_id=' . $document->id
+                        . ' txid=' . $transaction->txid
+                    );
+                }
             }
             catch(\Exception $e) {
-                $message = $e->getMessage();
-
-                Log::error('module=Gerencianet'
-                    . ' action=Cancel'
-                    . ' document_id=' . $document->id
-                    . ' txid=' . $transaction->txid
-                    . ' error=' . $message
-                );
+                if($setting['logs'] == '1') {
+                    Log::create([
+                        'company_id' => $document->company_id,
+                        'document_id' => $document->id,
+                        'action' => 'cancel',
+                        'error' => true,
+                        'message' => $e->getMessage()
+                    ]);
+                }
+                else {
+                    FacadeLog::error('module=Gerencianet'
+                        . ' action=Cancel'
+                        . ' document_id=' . $document->id
+                        . ' txid=' . $transaction->txid
+                        . ' message=' . $e->getMessage()
+                    );
+                }
             }
         }
     }

@@ -18,206 +18,122 @@
         </div>
         @endif
 
-        @if ($transactions->count() || request()->get('search', false))
+        @if (! $withoutTabs || $tabActive != 'transactions')
             <x-index.container>
+                <x-tabs active="{{ $tabActive }}">
+                    <x-slot name="navs">
+                        @stack('transaction_nav_start')
 
-                {{-- It doesn't work. Fix in future --}}
-                {{-- <x-index.search
-                    search-string="Modules\Gerencianet\Models\Transaction"
-                    route="gerencianet.transactions.index"
-                /> --}}
+                        @if ($tabActive == 'transactions')
+                            <x-tabs.nav
+                                id="transactions"
+                                name="{{ trans('gerencianet::general.transactions_tab') }}"
+                                active
+                            />
+                        @else
+                            <x-tabs.nav-link
+                                id="transactions"
+                                name="{{ trans('gerencianet::general.transactions_tab') }}"
+                                href="{{ route('gerencianet.transactions.index') }}"
+                            />
+                        @endif
 
-                @stack('document_start')
-                <x-table>
-                    <x-table.thead>
-                        <x-table.tr class="flex items-center px-1">
-                            @stack('due_at_and_issued_at_th_start')
-                            <x-table.th class="w-4/12 table-title hidden sm:table-cell">
-                                @stack('due_at_th_start')
-                                <x-slot name="first">
-                                    @stack('due_at_th_inside_start')
-                                    <x-sortablelink
-                                        column="document.due_at"
-                                        title="{{ trans('invoices.due_date') }}"
+                        @stack('transaction_nav_end')
+
+                        @stack('log_nav_start')
+
+                        @if ($tabActive == 'logs')
+                            <x-tabs.nav
+                                id="logs"
+                                name="{{ trans('gerencianet::general.logs_tab') }}"
+                                active
+                            />
+                        @else
+                            <x-tabs.nav-link
+                                id="logs"
+                                name="{{ trans('gerencianet::general.logs_tab') }}"
+                                href="{{ route('gerencianet.logs.index') }}"
+                            />
+                        @endif
+
+                        @stack('log_nav_end')
+                    </x-slot>
+
+                    <x-slot name="content">
+                        @if ($records->count() || request()->get('search', false))
+                            {{-- It doesn't work. Fix in future --}}
+                            {{-- <x-index.search
+                                search-string="Modules\Gerencianet\Models\Transaction"
+                                route="gerencianet.transactions.index"
+                            /> --}}
+
+                            @stack('transaction_tab_start')
+
+                            @if ($tabActive == 'transactions')
+                                <x-tabs.tab id="transactions">
+                                    @include('gerencianet::admin.transaction', ['transactions' => $records])
+                                </x-tabs.tab>
+                            @endif
+
+                            @stack('transaction_tab_end')
+
+                            @stack('log_tab_start')
+
+                            @if ($tabActive == 'logs')
+                                <x-tabs.tab id="logs">
+                                    @include('gerencianet::admin.log', ['logs' => $records])
+                                </x-tabs.tab>
+                            @endif
+
+                            @stack('log_tab_end')
+                        @else
+                            <div class="flex flex-col lg:flex-row">
+                                <div class="w-full lg:w-1/2">
+                                    <div class="border-b px-2 pb-3">
+                                        <p class="mt-6 text-sm">
+                                            {!! trans('gerencianet::general.empty.' . $tabActive) !!}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="w-full lg:w-1/2 flex justify-end mt-8 lg:mt-20">
+                                    <img
+                                        src="public/img/empty_pages/invoices.png"
+                                        alt="{{ trans('gerencianet::general.name') }}"
                                     />
-                                    @stack('due_at_th_inside_end')
-                                </x-slot>
-                                @stack('due_at_th_end')
-
-                                @stack('issued_at_th_start')
-                                <x-slot name="second">
-                                    @stack('issued_at_th_inside_start')
-                                    <x-sortablelink
-                                        column="document.issued_at"
-                                        title="{{ trans('invoices.invoice_date') }}"
-                                    />
-                                    @stack('issued_at_th_inside_end')
-                                </x-slot>
-                                @stack('issued_at_th_end')
-                            </x-table.th>
-                            @stack('due_at_and_issued_at_th_end')
-
-                            @stack('status_th_start')
-                            <x-table.th class="w-3/12 table-title hidden sm:table-cell">
-                                @stack('status_th_inside_start')
-                                <x-sortablelink
-                                    column="document.status"
-                                    title="{{ trans_choice('general.statuses', 1) }}"
-                                />
-                                @stack('status_th_inside_end')
-                            </x-table.th>
-                            @stack('status_th_end')
-
-                            @stack('contact_name_ane_document_number_th_start')
-                            <x-table.th class="w-6/12 sm:w-3/12 table-title">
-                                @stack('contact_name_th_start')
-                                <x-slot name="first">
-                                    @stack('contact_name_th_inside_start')
-                                    <x-sortablelink
-                                        column="document.contact_name"
-                                        title="{{ trans_choice('general.customers', 1) }}"
-                                    />
-                                    @stack('contact_name_th_inside_end')
-                                </x-slot>
-                                @stack('contact_name_th_end')
-
-                                @stack('document_number_th_start')
-                                <x-slot name="second">
-                                    @stack('document_number_th_inside_start')
-                                    <x-sortablelink
-                                        column="document.document_number"
-                                        title="{{ trans_choice('general.numbers', 1) }}"
-                                    />
-                                    @stack('document_number_th_inside_end')
-                                </x-slot>
-                                @stack('document_number_th_end')
-                            </x-table.th>
-                            @stack('contact_name_ane_document_number_th_end')
-
-                            @stack('amount_th_start')
-                            <x-table.th class="w-6/12 sm:w-2/12" kind="amount">
-                                @stack('amount_th_inside_start')
-                                <x-sortablelink
-                                    column="document.amount"
-                                    title="{{ trans('general.amount') }}"
-                                />
-                                @stack('amount_th_inside_end')
-                            </x-table.th>
-                            @stack('amount_th_end')
-                        </x-table.tr>
-                    </x-table.thead>
-
-                    <x-table.tbody>
-                        @foreach($transactions as $transaction)
-                            @php
-                            $item = $transaction->document;
-                            $url = URL::signedRoute('signed.invoices.show', [$item->id]);
-                            @endphp
-                            <x-table.tr onclick="window.open('{{ $url }}', '_blank');">
-                                @stack('due_at_and_issued_at_td_start')
-                                <x-table.td class="w-4/12 table-title hidden sm:table-cell">
-                                    @stack('due_at_td_start')
-                                    <x-slot name="first" class="font-bold truncate" override="class">
-                                        @stack('due_at_td_inside_start')
-                                        <x-date
-                                            :date="$item->due_at"
-                                            function="diffForHumans"
-                                        />
-                                        @stack('due_at_td_inside_end')
-                                    </x-slot>
-                                    @stack('due_at_td_end')
-
-                                    @stack('issued_at_td_start')
-                                    <x-slot name="second">
-                                        @stack('issued_at_td_inside_start')
-                                        <x-date date="{{ $item->issued_at }}" />
-                                        @stack('issued_at_td_inside_end')
-                                    </x-slot>
-                                    @stack('issued_at_td_end')
-                                </x-table.td>
-                                @stack('due_at_and_issued_at_td_end')
-
-                                @stack('status_td_start')
-                                    <x-table.td class="w-3/12 table-title hidden sm:table-cell">
-                                        @stack('status_td_inside_start')
-                                        <span class="px-2.5 py-1 text-xs font-medium rounded-xl bg-{{ $item->status_label }} text-text-{{ $item->status_label }}">
-                                            {{ trans('documents.statuses.' . $item->status) }}
-                                        </span>
-                                        @stack('status_td_inside_end')
-                                    </x-table.td>
-                                @stack('status_td_end')
-
-                                @stack('contact_name_and_document_number_td_start')
-                                <x-table.td class="w-6/12 sm:w-3/12 table-title">
-                                    @stack('contact_name_td_start')
-                                    <x-slot name="first">
-                                        @stack('contact_name_td_inside_start')
-                                        {{ $item->contact_name }}
-                                        @stack('contact_name_td_inside_end')
-                                    </x-slot>
-                                    @stack('contact_name_td_end')
-
-                                    @stack('document_number_td_start')
-                                    <x-slot
-                                        name="second"
-                                        class="w-20 font-normal group"
-                                        data-tooltip-target="tooltip-information-{{ $item->id }}"
-                                        data-tooltip-placement="left"
-                                        override="class"
-                                    >
-                                        @stack('document_number_td_inside_start')
-                                        <span class="border-black border-b border-dashed">
-                                            {{ $item->document_number }}
-                                        </span>
-
-                                        <div class="w-28 absolute h-10 -ml-12 -mt-6"></div>
-                                        @stack('document_number_td_inside_end')
-
-                                        <x-documents.index.information
-                                            :document="$item"
-                                            :hide-show="false"
-                                            :show-route="'customers.show'"
-                                        />
-                                    </x-slot>
-                                    @stack('document_number_td_end')
-                                </x-table.td>
-                                @stack('contact_name_and_document_number_td_end')
-
-                                @stack('amount_td_start')
-                                <x-table.td class="w-6/12 sm:w-2/12" kind="amount">
-                                    @stack('amount_td_inside_start')
-                                    <x-money
-                                        :amount="$item->amount"
-                                        :currency="$item->currency_code"
-                                        convert
-                                    />
-                                    @stack('amount_td_inside_end')
-                                </x-table.td>
-
-                                <x-table.td kind="action">
-                                    <x-table.actions :model="$transaction" />
-                                </x-table.td>
-                                @stack('amount_td_end')
-                            </x-table.tr>
-                        @endforeach
-                    </x-table.tbody>
-                </x-table>
-
-                <x-pagination :items="$transactions" />
-                @stack('document_end')
-
+                                </div>
+                            </div>
+                        @endif
+                    </x-slot>
+                </x-tabs>
             </x-index.container>
         @else
-            <x-empty-page
-                group="gerencianet"
-                page="transactions"
-                image-empty-page="public/img/empty_pages/invoices.png"
-                text-empty-page="gerencianet::general.empty.transactions"
-                docs-category="payment-method"
-                url-docs-path="#"
-                :buttons="$emptyPageButtons"
-                check-permission-create="true"
-            />
+            @if ($records->count() || request()->get('search', false))
+                <x-index.container>
+                    {{-- It doesn't work. Fix in future --}}
+                    {{-- <x-index.search
+                        search-string="Modules\Gerencianet\Models\Transaction"
+                        route="gerencianet.transactions.index"
+                    /> --}}
+
+                    @stack('transaction_start')
+
+                    @include('gerencianet::admin.transaction', ['transactions' => $records])
+
+                    @stack('transaction_end')
+                </x-index.container>
+            @else
+                <x-empty-page
+                    group="gerencianet"
+                    page="transactions"
+                    image-empty-page="public/img/empty_pages/invoices.png"
+                    text-empty-page="gerencianet::general.empty.transactions"
+                    docs-category="payment-method"
+                    url-docs-path="#"
+                    :buttons="$emptyPageButtons"
+                    check-permission-create="true"
+                />
+            @endif
         @endif
     </x-slot>
 

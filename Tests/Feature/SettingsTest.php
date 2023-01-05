@@ -48,6 +48,7 @@ class SettingsTest extends FeatureTestCase
             'email_attachment' => '1',
             'order' => '1',
             'field_validations' => '1',
+            'logs' => '1',
             'customer' => '1'
         ];
     }

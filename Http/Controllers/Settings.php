@@ -7,7 +7,8 @@ use App\Http\Requests\Setting\Module as Request;
 use App\Models\Banking\Account;
 use App\Models\Setting\Setting;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log as FacadeLog;
+use Modules\Gerencianet\Models\Log;
 use Modules\Gerencianet\Traits\Gerencianet;
 
 class Settings extends Modules
@@ -56,8 +57,30 @@ class Settings extends Modules
     public function update($alias, Request $request)
     {
         $setting = setting();
+        $logs_before = $setting->get('gerencianet.logs');
 
         $response = parent::update($alias, $request);
+
+        if(($logs_before == null || $logs_before == '0') && $request['logs'] == '1') {
+            $data = [
+                'company_id' => company_id(),
+                'error' => false,
+                'action' => 'enable',
+                'message' => 'Logs enabled.'
+            ];
+
+            Log::create($data);
+        }
+        else if($logs_before == '1' && $request['logs'] == '0') {
+            $data = [
+                'company_id' => company_id(),
+                'error' => false,
+                'action' => 'disable',
+                'message' => 'Logs disabled.'
+            ];
+
+            Log::create($data);
+        }
 
         try {
             $this->pixConfigWebhook();
@@ -76,16 +99,27 @@ class Settings extends Modules
                 property_exists($e, 'error') &&
                 property_exists($e, 'errorDescription')
             ) {
-                    $message = $e->error . ' ' . json_encode($e->errorDescription);
+                $message = $e->error . ' '
+                    . json_encode($e->errorDescription, JSON_UNESCAPED_UNICODE);
             }
             else {
                 $message = $e->getMessage();
             }
 
-            Log::error('module=Gerencianet'
-                . ' action=Webhook'
-                . ' response=' . $message
-            );
+            if($request['logs'] == '1') {
+                Log::create([
+                    'company_id' => company_id(),
+                    'action' => 'webhook',
+                    'error' => true,
+                    'message' => $message
+                ]);
+            }
+            else {
+                FacadeLog::error('module=Gerencianet'
+                    . ' action=Webhook'
+                    . ' message=' . $message
+                );
+            }
         }
 
         return $response;

@@ -8,7 +8,8 @@ use App\Models\Document\Document;
 use App\Traits\Documents;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log as FacadeLog;
+use Modules\Gerencianet\Models\Log;
 use Modules\Gerencianet\Models\Transaction as ModelsTransaction;
 use Modules\Gerencianet\Traits\Gerencianet;
 
@@ -102,12 +103,23 @@ class Transaction extends Notification
                 $payment = $this->pixGenerateQRCode($transaction->location_id);
             }
             catch(\Exception $e) {
-                Log::error('module=Gerencianet'
-                    . ' action=Show'
-                    . ' document_id=' . $this->invoice->id
-                    . ' txid=' . $transaction->txid
-                    . ' error=' . $e->getMessage()
-                );
+                if(setting('gerencianet.logs') == '1') {
+                    Log::create([
+                        'company_id' => company_id(),
+                        'document_id' => $this->invoice->id,
+                        'action' => 'show',
+                        'error' => true,
+                        'message' => $e->getMessage()
+                    ]);
+                }
+                else {
+                    FacadeLog::error('module=Gerencianet'
+                        . ' action=Show'
+                        . ' document_id=' . $this->invoice->id
+                        . ' txid=' . $transaction->txid
+                        . ' message=' . $e->getMessage()
+                    );
+                }
             }
 
             if($payment !== null) {

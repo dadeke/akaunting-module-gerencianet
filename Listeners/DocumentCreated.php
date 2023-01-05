@@ -5,7 +5,8 @@ namespace Modules\Gerencianet\Listeners;
 use App\Events\Document\DocumentCreated as Event;
 use App\Models\Document\Document;
 use App\Traits\Modules;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log as FacadeLog;
+use Modules\Gerencianet\Models\Log;
 use Modules\Gerencianet\Models\Transaction;
 use Modules\Gerencianet\Traits\Gerencianet;
 
@@ -179,28 +180,55 @@ class DocumentCreated
                     $txid = $transaction->txid;
                 }
 
-                Log::info('module=Gerencianet'
-                    . ' action=' . $action
-                    . ' document_id=' . $document->id
-                    . ' txid=' . $txid
-                );
+                if($setting['logs'] == '1') {
+                    Log::create([
+                        'company_id' => $document->company_id,
+                        'document_id' => $document->id,
+                        'action' => 'create',
+                        'error' => false,
+                        'message' => json_encode([
+                            'txid' => $txid
+                        ])
+                    ]);
+                }
+                else {
+                    FacadeLog::info('module=Gerencianet'
+                        . ' action=' . $action
+                        . ' document_id=' . $document->id
+                        . ' txid=' . $txid
+                    );
+                }
             }
             catch(\Exception $e) {
                 $message = null;
 
-                if(property_exists($e, 'error') &&
-                    property_exists($e, 'errorDescription')) {
-                        $message = $e->error . ' ' . json_encode($e->errorDescription);
+                if(
+                    property_exists($e, 'error') &&
+                    property_exists($e, 'errorDescription')
+                ) {
+                    $message = $e->error . ' '
+                        . json_encode($e->errorDescription, JSON_UNESCAPED_UNICODE);
                 }
                 else {
                     $message = $e->getMessage();
                 }
 
-                Log::error('module=Gerencianet'
-                    . ' action=' . $action
-                    . ' document_id=' . $document->id
-                    . ' error=' . $message
-                );
+                if($setting['logs'] == '1') {
+                    Log::create([
+                        'company_id' => $document->company_id,
+                        'document_id' => $document->id,
+                        'action' => 'create',
+                        'error' => true,
+                        'message' => $message
+                    ]);
+                }
+                else {
+                    FacadeLog::error('module=Gerencianet'
+                        . ' action=' . $action
+                        . ' document_id=' . $document->id
+                        . ' message=' . $message
+                    );
+                }
             }
         }
     }

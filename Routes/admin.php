@@ -13,4 +13,5 @@ Route::admin('gerencianet', function () {
     });
 
     Route::resource('transactions', 'Transactions');
+    Route::resource('logs', 'Logs');
 });

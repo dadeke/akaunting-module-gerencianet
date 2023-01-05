@@ -5,7 +5,8 @@ namespace Modules\Gerencianet\Http\Controllers;
 use App\Abstracts\Http\PaymentController;
 use App\Http\Requests\Portal\InvoicePayment as PaymentRequest;
 use App\Models\Document\Document;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log as FacadeLog;
+use Modules\Gerencianet\Models\Log;
 use Modules\Gerencianet\Models\Transaction;
 use Modules\Gerencianet\Traits\Gerencianet;
 
@@ -43,14 +44,23 @@ class Payment extends PaymentController
                             ->render();
             }
             catch(\Exception $e) {
-                $message = $e->getMessage();
-
-                Log::error('module=Gerencianet'
-                    . ' action=Show'
-                    . ' document_id=' . $invoice->id
-                    . ' txid=' . $transaction->txid
-                    . ' error=' . $message
-                );
+                if($this->setting['logs'] == '1') {
+                    Log::create([
+                        'company_id' => company_id(),
+                        'document_id' => $invoice->id,
+                        'action' => 'show',
+                        'error' => true,
+                        'message' => $e->getMessage()
+                    ]);
+                }
+                else {
+                    FacadeLog::error('module=Gerencianet'
+                        . ' action=Show'
+                        . ' document_id=' . $invoice->id
+                        . ' txid=' . $transaction->txid
+                        . ' message=' . $e->getMessage()
+                    );
+                }
 
                 $html = view('gerencianet::portal.unavailable')->render();
             }

@@ -28,4 +28,25 @@ class TransactionTest extends FeatureTestCase
             ->assertStatus(200)
             ->assertSeeText(trans('gerencianet::general.transactions'));
     }
+
+    public function testItShouldNotSeeTransactionTab()
+    {
+        $this->loginAs()
+            ->get(route('gerencianet.transactions.index'))
+            ->assertStatus(200)
+            ->assertDontSee('tab-transactions');
+    }
+
+    public function testItShouldSeeTransactionTab()
+    {
+        $setting = setting();
+        $setting->setExtraColumns(['company_id' => $this->company->id]);
+        $setting->set('gerencianet', ['logs' => '1']);
+        $setting->save();
+
+        $this->loginAs()
+            ->get(route('gerencianet.transactions.index'))
+            ->assertStatus(200)
+            ->assertSee('tab-transactions');
+    }
 }
