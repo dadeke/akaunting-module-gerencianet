@@ -54,15 +54,6 @@ jobs:
         with:
           path: modules/${{ env.MODULE_FOLDER_NAME }}
 
-      - name: Download the extra modules
-        timeout-minutes: 10
-        run: |
-          for k in $(jq -r '."extra-modules" | keys | .[]' tmp-path-for-module/module.json); do
-            modName=$(echo -n $k | sed -r 's/(^|-)([a-z])/\U\2/g')
-            mkdir -p modules/$modName
-            git clone https://${{ secrets.AKAUNTING_OFFICIAL_TOKEN }}:x-oauth-basic@github.com/akaunting/module-${k}.git modules/$modName
-          done
-
       - name: Remove the tmp folder
         timeout-minutes: 1
         run: rm -rf tmp-path-for-module
