@@ -1,0 +1,276 @@
+name: Releases
+
+on:
+  release:
+    types: [released, prereleased]
+
+jobs:
+  check-json-version:
+
+    runs-on: ubuntu-20.04
+
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout module
+        timeout-minutes: 1
+        uses: actions/checkout@v2
+
+      - id: set_var
+        timeout-minutes: 1
+        run: |
+          content=`cat ./module.json`
+          # the following lines are only required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          # end of optional handling for multi line json
+          echo "::set-output name=moduleJson::$content"
+
+      - name: Set release version
+        timeout-minutes: 1
+        id: release_version
+        run: |
+          echo "::set-output name=version::${GITHUB_REF#refs/*/}"
+
+      - name: Check version equality
+        timeout-minutes: 1
+        id: version_status
+        run: |
+          if [ "${{fromJson(steps.set_var.outputs.moduleJson).version}}" == ${{steps.release_version.outputs.version}} ]; then
+              echo "::set-output name=status::e"
+          else
+              echo "::set-output name=status::ne"
+          fi
+
+      - name: Version bump
+        timeout-minutes: 1
+        if: steps.version_status.outputs.status == 'ne'
+        run: |
+          tmp=$(mktemp)
+          jq --tab --indent 4 --arg a "${{steps.release_version.outputs.version}}" '.version = $a' module.json > "$tmp" && mv "$tmp" module.json
+
+      - name: Commit changes
+        timeout-minutes: 1
+        if: steps.version_status.outputs.status == 'ne'
+        uses: EndBug/add-and-commit@v7
+        with:
+          message: 'version bump'
+          branch: master
+
+  tests:
+
+    needs: [check-json-version]
+
+    name: PHP ${{ matrix.php }}
+
+    runs-on: ubuntu-20.04
+
+    timeout-minutes: 40
+
+    strategy:
+      matrix:
+        php: ['8.0', '8.1']
+
+    steps:
+      - name: Checkout Akaunting
+        timeout-minutes: 1
+        uses: actions/checkout@v2
+        with:
+          repository: akaunting/akaunting
+
+      - name: Checkout module to tmp path
+        timeout-minutes: 1
+        uses: actions/checkout@v2
+        with:
+          path: tmp-path-for-module
+
+      - id: set_var
+        timeout-minutes: 1
+        run: |
+          content=`cat ./tmp-path-for-module/module.json`
+          # the following lines are only required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          # end of optional handling for multi line json
+          echo "::set-output name=moduleJson::$content"
+      - name: Create module folder name which is PascalCase
+        timeout-minutes: 1
+        run: |
+          MODULE_FOLDER_NAME=$(echo -n ${{fromJson(steps.set_var.outputs.moduleJson).alias}} | sed -r 's/(^|-)([a-z])/\U\2/g')
+          echo "MODULE_FOLDER_NAME=${MODULE_FOLDER_NAME}" >> $GITHUB_ENV
+      - name: Checkout module
+        timeout-minutes: 1
+        uses: actions/checkout@v2
+        with:
+          path: modules/${{ env.MODULE_FOLDER_NAME }}
+
+      - name: Remove the tmp folder
+        timeout-minutes: 1
+        run: rm -rf tmp-path-for-module
+
+      - name: Cache Composer
+        timeout-minutes: 1
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache/files
+          key: php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+
+      - name: Setup PHP
+        timeout-minutes: 1
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: bcmath, ctype, dom, fileinfo, intl, gd, json, mbstring, pdo, pdo_sqlite, openssl, sqlite, xml, zip
+          coverage: none
+
+      - name: Copy .env
+        timeout-minutes: 1
+        run: cp .env.testing .env
+
+      - name: Install Composer
+        timeout-minutes: 5
+        run: cd "modules/${{ env.MODULE_FOLDER_NAME }}" ; composer test ; cd ../.. ; composer test
+
+      - name: Execute tests
+        timeout-minutes: 30
+        run: php artisan test --parallel
+
+  build:
+
+    needs: [tests]
+
+    runs-on: ubuntu-20.04
+
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout Akaunting
+        timeout-minutes: 1
+        uses: actions/checkout@v2
+        with:
+          repository: akaunting/akaunting
+
+      - name: Checkout module to tmp path
+        timeout-minutes: 1
+        uses: actions/checkout@v2
+        with:
+          path: tmp-path-for-module
+
+      - id: set_var
+        timeout-minutes: 1
+        run: |
+          content=`cat ./tmp-path-for-module/module.json`
+          # the following lines are only required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          # end of optional handling for multi line json
+          echo "::set-output name=moduleJson::$content"
+
+      - name: Remove the tmp folder
+        timeout-minutes: 1
+        run: rm -rf tmp-path-for-module
+
+      - name: Create module folder name which is PascalCase
+        timeout-minutes: 1
+        run: |
+          MODULE_FOLDER_NAME=$(echo -n ${{fromJson(steps.set_var.outputs.moduleJson).alias}} | sed -r 's/(^|-)([a-z])/\U\2/g')
+          echo "MODULE_FOLDER_NAME=${MODULE_FOLDER_NAME}" >> $GITHUB_ENV
+
+      - name: Checkout module
+        timeout-minutes: 1
+        uses: actions/checkout@v2
+        with:
+          path: modules/${{ env.MODULE_FOLDER_NAME }}
+
+      - name: Cache Composer
+        timeout-minutes: 1
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache/files
+          key: php-8.0-composer-${{ hashFiles('composer.json') }}
+
+      - name: Setup PHP
+        timeout-minutes: 1
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          extensions: bcmath, ctype, dom, fileinfo, intl, gd, json, mbstring, pdo, pdo_sqlite, openssl, sqlite, xml, zip
+          coverage: none
+
+      - name: Install Composer
+        timeout-minutes: 1
+        run: |
+          if [ -f modules/${{ env.MODULE_FOLDER_NAME }}/composer.json ]; then
+              cd "modules/${{ env.MODULE_FOLDER_NAME }}"
+              composer install --no-dev
+          fi
+
+      - name: Install and run NPM
+        timeout-minutes: 15
+        run: |
+          if [ -f modules/${{ env.MODULE_FOLDER_NAME }}/webpack.mix.js ]; then
+              npm install
+              cd "modules/${{ env.MODULE_FOLDER_NAME }}"
+              npm install
+              npm run production
+          fi
+
+      - name: Tmp apt fix
+        timeout-minutes: 1
+        run: sudo apt --fix-broken install
+
+      - name: Install zip
+        timeout-minutes: 1
+        run: sudo apt install zip
+
+      - name: Delete sass folder
+        timeout-minutes: 1
+        run: |
+          if [ -d modules/${{ env.MODULE_FOLDER_NAME }}/Resources/assets ]; then
+              cd "modules/${{ env.MODULE_FOLDER_NAME }}/Resources/assets"
+              rm -rf sass
+          fi
+
+      - name: Delete non .min.js files
+        timeout-minutes: 1
+        run: |
+          if [ -d modules/${{ env.MODULE_FOLDER_NAME }}/Resources/assets/js ]; then
+              cd "modules/${{ env.MODULE_FOLDER_NAME }}/Resources/assets/js"
+              find . -type f ! -name '*.min.js' -delete
+          fi
+
+      - name: Set release version
+        timeout-minutes: 1
+        id: release_version
+        run: |
+          echo "::set-output name=version::${GITHUB_REF#refs/*/}"
+
+      - name: Check version equality
+        timeout-minutes: 1
+        id: version_status
+        run: |
+          if [ "${{fromJson(steps.set_var.outputs.moduleJson).version}}" == ${{steps.release_version.outputs.version}} ]; then
+              echo "::set-output name=status::e"
+          else
+              echo "::set-output name=status::ne"
+          fi
+
+      - name: Version bump
+        timeout-minutes: 1
+        if: steps.version_status.outputs.status == 'ne'
+        run: |
+          tmp=$(mktemp)
+          jq --tab --indent 4 --arg a "${{steps.release_version.outputs.version}}" '.version = $a' "modules/${{ env.MODULE_FOLDER_NAME }}/module.json" > "$tmp" && mv "$tmp" "modules/${{ env.MODULE_FOLDER_NAME }}/module.json"
+
+      - name: ZIP
+        timeout-minutes: 2
+        run: cd "modules/${{ env.MODULE_FOLDER_NAME }}" ; zip -r ../../final-build.zip . * -x '*.git*' -x '*node_modules*' -x '*Tests*' -x '*__EXTRA*' -x 'composer.json' -x 'composer.lock' -x 'crowdin.yml' -x 'package-lock.json' -x 'package.json' -x 'README.md' -x 'webpack.mix.js' -x 'mix-manifest.json' -x 'phpunit.xml' ; cd ..
+
+      - uses: actions/upload-artifact@master
+        timeout-minutes: 3
+        with:
+          name: final-build
+          path: ${{ github.workspace }}/final-build.zip
