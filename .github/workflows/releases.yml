@@ -274,3 +274,53 @@ jobs:
         with:
           name: final-build
           path: ${{ github.workspace }}/final-build.zip
+
+  upload-to-site:
+
+    needs: [build]
+
+    runs-on: ubuntu-20.04
+
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/download-artifact@master
+        timeout-minutes: 5
+        with:
+          name: final-build
+
+      - name: Install unzip
+        timeout-minutes: 1
+        run: sudo apt install unzip
+
+      - name: UNZIP
+        timeout-minutes: 3
+        run: unzip final-build.zip -d src
+
+      - id: set_var
+        timeout-minutes: 1
+        run: |
+          content=`cat ./src/module.json`
+          # the following lines are only required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          # end of optional handling for multi line json
+          echo "::set-output name=moduleJson::$content"
+      - name: Set release version
+        timeout-minutes: 1
+        id: release_version
+        run: |
+          echo "::set-output name=version::${GITHUB_REF#refs/*/}"
+      - name: Rename zip archive
+        timeout-minutes: 2
+        run: mv final-build.zip ${{fromJson(steps.set_var.outputs.moduleJson).alias}}-v${{steps.release_version.outputs.version}}.zip
+
+      - name: Upload to release
+        timeout-minutes: 5
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{fromJson(steps.set_var.outputs.moduleJson).alias}}-v${{steps.release_version.outputs.version}}.zip
+          tag: ${{ github.ref }}
+          overwrite: true
