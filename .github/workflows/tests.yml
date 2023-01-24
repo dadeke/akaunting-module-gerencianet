@@ -21,13 +21,13 @@ jobs:
     steps:
       - name: Checkout Akaunting
         timeout-minutes: 1
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: akaunting/akaunting
 
       - name: Checkout module to tmp path
         timeout-minutes: 1
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: tmp-path-for-module
 
@@ -46,7 +46,7 @@ jobs:
 
       - name: Checkout module
         timeout-minutes: 1
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: modules/${{ env.MODULE_FOLDER_NAME }}
 
@@ -56,7 +56,7 @@ jobs:
 
       - name: Cache Composer
         timeout-minutes: 1
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.composer/cache/files
           key: php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}

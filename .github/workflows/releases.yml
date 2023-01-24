@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Checkout module
         timeout-minutes: 1
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - id: set_var
         timeout-minutes: 1
@@ -49,7 +49,7 @@ jobs:
       - name: Commit changes
         timeout-minutes: 1
         if: steps.version_status.outputs.status == 'ne'
-        uses: EndBug/add-and-commit@v7
+        uses: EndBug/add-and-commit@v9
         with:
           message: 'version bump'
           branch: master
@@ -71,13 +71,13 @@ jobs:
     steps:
       - name: Checkout Akaunting
         timeout-minutes: 1
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: akaunting/akaunting
 
       - name: Checkout module to tmp path
         timeout-minutes: 1
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: tmp-path-for-module
 
@@ -94,7 +94,7 @@ jobs:
           echo "MODULE_FOLDER_NAME=${MODULE_FOLDER_NAME}" >> $GITHUB_ENV
       - name: Checkout module
         timeout-minutes: 1
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: modules/${{ env.MODULE_FOLDER_NAME }}
 
@@ -104,7 +104,7 @@ jobs:
 
       - name: Cache Composer
         timeout-minutes: 1
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.composer/cache/files
           key: php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
@@ -140,13 +140,13 @@ jobs:
     steps:
       - name: Checkout Akaunting
         timeout-minutes: 1
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: akaunting/akaunting
 
       - name: Checkout module to tmp path
         timeout-minutes: 1
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: tmp-path-for-module
 
@@ -169,13 +169,13 @@ jobs:
 
       - name: Checkout module
         timeout-minutes: 1
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: modules/${{ env.MODULE_FOLDER_NAME }}
 
       - name: Cache Composer
         timeout-minutes: 1
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.composer/cache/files
           key: php-8.0-composer-${{ hashFiles('composer.json') }}
