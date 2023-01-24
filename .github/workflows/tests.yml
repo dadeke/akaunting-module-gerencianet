@@ -34,13 +34,9 @@ jobs:
       - id: set_var
         timeout-minutes: 1
         run: |
-          content=`cat ./tmp-path-for-module/module.json`
-          # the following lines are only required for multi line json
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          # end of optional handling for multi line json
-          echo "::set-output name=moduleJson::$content"
+          echo 'moduleJson<<EOF' >> $GITHUB_OUTPUT
+          cat ./tmp-path-for-module/module.json >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
 
       - name: Create module folder name which is PascalCase
         timeout-minutes: 1

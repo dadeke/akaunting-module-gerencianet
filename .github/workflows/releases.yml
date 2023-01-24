@@ -19,28 +19,24 @@ jobs:
       - id: set_var
         timeout-minutes: 1
         run: |
-          content=`cat ./module.json`
-          # the following lines are only required for multi line json
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          # end of optional handling for multi line json
-          echo "::set-output name=moduleJson::$content"
+          echo 'moduleJson<<EOF' >> $GITHUB_OUTPUT
+          cat ./module.json >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
 
       - name: Set release version
         timeout-minutes: 1
         id: release_version
         run: |
-          echo "::set-output name=version::${GITHUB_REF#refs/*/}"
+          echo "version=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
 
       - name: Check version equality
         timeout-minutes: 1
         id: version_status
         run: |
           if [ "${{fromJson(steps.set_var.outputs.moduleJson).version}}" == ${{steps.release_version.outputs.version}} ]; then
-              echo "::set-output name=status::e"
+              echo "status=e" >> $GITHUB_OUTPUT
           else
-              echo "::set-output name=status::ne"
+              echo "status=ne" >> $GITHUB_OUTPUT
           fi
 
       - name: Version bump
@@ -88,13 +84,9 @@ jobs:
       - id: set_var
         timeout-minutes: 1
         run: |
-          content=`cat ./tmp-path-for-module/module.json`
-          # the following lines are only required for multi line json
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          # end of optional handling for multi line json
-          echo "::set-output name=moduleJson::$content"
+          echo 'moduleJson<<EOF' >> $GITHUB_OUTPUT
+          cat ./tmp-path-for-module/module.json >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
       - name: Create module folder name which is PascalCase
         timeout-minutes: 1
         run: |
@@ -161,13 +153,9 @@ jobs:
       - id: set_var
         timeout-minutes: 1
         run: |
-          content=`cat ./tmp-path-for-module/module.json`
-          # the following lines are only required for multi line json
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          # end of optional handling for multi line json
-          echo "::set-output name=moduleJson::$content"
+          echo 'moduleJson<<EOF' >> $GITHUB_OUTPUT
+          cat ./tmp-path-for-module/module.json >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
 
       - name: Remove the tmp folder
         timeout-minutes: 1
@@ -246,16 +234,16 @@ jobs:
         timeout-minutes: 1
         id: release_version
         run: |
-          echo "::set-output name=version::${GITHUB_REF#refs/*/}"
+          echo "version=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
 
       - name: Check version equality
         timeout-minutes: 1
         id: version_status
         run: |
           if [ "${{fromJson(steps.set_var.outputs.moduleJson).version}}" == ${{steps.release_version.outputs.version}} ]; then
-              echo "::set-output name=status::e"
+              echo "status=e" >> $GITHUB_OUTPUT
           else
-              echo "::set-output name=status::ne"
+              echo "status=ne" >> $GITHUB_OUTPUT
           fi
 
       - name: Version bump
@@ -300,18 +288,14 @@ jobs:
       - id: set_var
         timeout-minutes: 1
         run: |
-          content=`cat ./src/module.json`
-          # the following lines are only required for multi line json
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          # end of optional handling for multi line json
-          echo "::set-output name=moduleJson::$content"
+          echo 'moduleJson<<EOF' >> $GITHUB_OUTPUT
+          cat ./src/module.json >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
       - name: Set release version
         timeout-minutes: 1
         id: release_version
         run: |
-          echo "::set-output name=version::${GITHUB_REF#refs/*/}"
+          echo "version=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
       - name: Rename zip archive
         timeout-minutes: 2
         run: mv final-build.zip ${{fromJson(steps.set_var.outputs.moduleJson).alias}}-v${{steps.release_version.outputs.version}}.zip
