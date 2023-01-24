@@ -263,7 +263,7 @@ jobs:
           name: final-build
           path: ${{ github.workspace }}/final-build.zip
 
-  upload-to-site:
+  upload-to-release:
 
     needs: [build]
 
