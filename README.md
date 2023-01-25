@@ -6,6 +6,10 @@
 
 This app allows your customers to pay their invoices with Pix a common payment method used in Brazil using the payment processor [Gerencianet](https://gerencianet.com.br).
 
+## Requirements
+
+- [Akaunting 3](https://github.com/akaunting/akaunting/releases)
+
 ## Installation
 
 - Into `modules` create folder `Gerencianet` (camel case)
