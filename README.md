@@ -1,7 +1,7 @@
 # Gerencianet (Brazil) app for Akaunting
 
 [![Release](https://img.shields.io/github/v/release/dadeke/akaunting-module-gerencianet?label=release)](https://github.com/dadeke/akaunting-module-gerencianet/releases)
-[![Tests](https://github.com/dadeke/akaunting-module-gerencianet/actions/workflows/tests.yml/badge.svg)]( https://img.shields.io/github/actions/workflow/status/dadeke/akaunting-module-gerencianet/test.yml?branch=main)
+[![Tests](https://github.com/dadeke/akaunting-module-gerencianet/actions/workflows/tests.yml/badge.svg)](https://github.com/dadeke/akaunting-module-gerencianet/actions)
 [![License](https://img.shields.io/github/license/dadeke/akaunting-module-gerencianet?label=license)](LICENSE.txt)
 
 This app allows your customers to pay their invoices with Pix a common payment method used in Brazil using the payment processor [Gerencianet](https://gerencianet.com.br).
