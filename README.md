@@ -1,10 +1,10 @@
-# Gerencianet (Brazil) app for Akaunting
+# Efí (Brazil) app for Akaunting
 
 [![Release](https://img.shields.io/github/v/release/dadeke/akaunting-module-gerencianet?label=release)](https://github.com/dadeke/akaunting-module-gerencianet/releases)
 [![Tests](https://github.com/dadeke/akaunting-module-gerencianet/actions/workflows/tests.yml/badge.svg)](https://github.com/dadeke/akaunting-module-gerencianet/actions)
 [![License](https://img.shields.io/github/license/dadeke/akaunting-module-gerencianet?label=license)](LICENSE.txt)
 
-This app allows your customers to pay their invoices with Pix a common payment method used in Brazil using the payment processor [Gerencianet](https://gerencianet.com.br).
+This app allows your customers to pay their invoices with Pix a common payment method used in Brazil using the payment processor [Efí](https://sejaefi.com.br).
 
 ## Requirements
 
@@ -21,9 +21,9 @@ This app allows your customers to pay their invoices with Pix a common payment m
 ## Settings
 
 Create your Client ID, Client Secret:  
-[https://app.gerencianet.com.br/api/aplicacoes](https://app.gerencianet.com.br/api/aplicacoes)  
+[https://app.sejaefi.com.br/api/aplicacoes](https://app.sejaefi.com.br/api/aplicacoes)  
 and Certificate:  
-[https://app.gerencianet.com.br/api/meus-certificados](https://app.gerencianet.com.br/api/meus-certificados)
+[https://app.sejaefi.com.br/api/meus-certificados](https://app.sejaefi.com.br/api/meus-certificados)
 
 Save your credentials here:
 
