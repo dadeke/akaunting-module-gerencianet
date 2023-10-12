@@ -1,13 +1,14 @@
 {
     "name": "akaunting/module-gerencianet",
-    "description": "Gerencianet app for Akaunting",
-    "version": "1.0.0",
+    "description": "Efí app for Akaunting",
+    "version": "1.0.1",
     "homepage": "https://akaunting.com/apps/gerencianet",
     "keywords": [
         "laravel",
         "accounting",
         "invoice",
         "akaunting",
+        "efi",
         "gerencianet",
         "pix",
         "brazil",
