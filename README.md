@@ -27,4 +27,4 @@ and Certificate:
 
 Save your credentials here:
 
-![Akaunting - Settings - Gerencianet](https://user-images.githubusercontent.com/6050573/214577231-c0d585ce-e860-4a07-af91-5d1f08ab5a72.png)
+![Akaunting - Settings - Efí](https://github.com/dadeke/akaunting-module-gerencianet/assets/6050573/e49c008e-cef8-4b8b-a08d-71afa81df551)
