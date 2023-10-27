@@ -134,8 +134,9 @@ class DocumentCreated
                     ($setting['fine'] !== '') &&
                     ($setting['fine'] !== '0')
                 ) {
-                    $fine = floatval($setting['fine']);
-                    $fine = number_format($fine / 100, 2, '.', '');
+                    $fine = str_replace(',', '.', $setting['fine']);
+                    $fine = floatval($fine);
+                    $fine = number_format($fine, 2, '.', '');
 
                     $body['valor']['multa'] = [
                         'modalidade' => 2,
@@ -148,8 +149,9 @@ class DocumentCreated
                     ($setting['fee'] !== '') &&
                     ($setting['fee'] !== '0')
                 ) {
-                    $fee = floatval($setting['fee']);
-                    $fee = number_format($fee / 100, 2, '.', '');
+                    $fee = str_replace(',', '.', $setting['fee']);
+                    $fee = floatval($fee);
+                    $fee = number_format($fee, 2, '.', '');
 
                     $body['valor']['juros'] = [
                         'modalidade' => 2,
