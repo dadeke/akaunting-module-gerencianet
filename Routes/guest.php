@@ -11,3 +11,6 @@ use Illuminate\Support\Facades\Route;
 Route::post('{company_id}/gerencianet/webhook/{webhook_secret}',
     'Modules\Gerencianet\Http\Controllers\Webhook@index')
     ->name('gerencianet.invoices.webhook');
+Route::post('{company_id}/gerencianet/webhook/{webhook_secret}/pix',
+    'Modules\Gerencianet\Http\Controllers\Webhook@index')
+    ->name('gerencianet.invoices.webhook');

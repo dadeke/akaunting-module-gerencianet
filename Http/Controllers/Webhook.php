@@ -64,14 +64,14 @@ class Webhook extends Controller
             $paid_at = explode('T', $pix['horario']);
             $paid_at = $paid_at[0];
 
-            $request = [
-                'type' => 'income',
-                'payment_method' => $this->alias,
-                'paid_at' => $paid_at,
-                'amount' => $pix['valor'],
-                'account_id' => $setting['account_id'],
-                'description' => $pix['infoPagador']
-            ];
+            $request['type'] = 'income';
+            $request['payment_method'] = $this->alias;
+            $request['paid_at'] = $paid_at;
+            $request['amount'] = $pix['valor'];
+            $request['account_id'] = $setting['account_id'];
+            if(! empty($pix['infoPagador'])) {
+                $request['description'] = $pix['infoPagador'];
+            }
 
             event(new PaymentReceived($document, $request));
 
@@ -119,7 +119,8 @@ class Webhook extends Controller
         }
         else if (
             $document !== null &&
-            $document->status === 'paid'
+            $document->status === 'paid' &&
+            ! empty($pix['devolucoes'])
         ) {
             foreach ($pix['devolucoes'] as $refund) {
                 if ($refund['status'] != 'DEVOLVIDO') {
