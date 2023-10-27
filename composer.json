@@ -1,7 +1,7 @@
 {
     "name": "akaunting/module-gerencianet",
     "description": "Efí app for Akaunting",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "homepage": "https://akaunting.com/apps/gerencianet",
     "keywords": [
         "laravel",
